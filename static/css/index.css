@@ -1,0 +1,36 @@
+.page-layout {
+    display: flex;
+    gap: 20px;
+    width: 95%;
+    margin: 20px auto;
+}
+
+.left-container{
+    flex: 2;
+    border: 2px solid black
+    radius: 8px;
+}
+
+.right-container {
+    flex: 1;
+    border: 2px solid black
+    radius: 8px;
+}
+
+.box {
+    border: 2px solid black
+    margin-bottom: 20px;
+    padding:20px;
+    min-height:200px;
+}
+
+.top-box {
+    text-align: center;
+}
+.bottom-box {
+    text-align: center;
+}
+.right-box {
+    height: calc(100% - 40px);
+
+

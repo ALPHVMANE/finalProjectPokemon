@@ -1,0 +1,58 @@
+<!-- templates/display_pokemon.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Selected Pokemon</title>
+    <style>
+        .page-layout {
+            display: flex;
+            gap: 20px;
+            width: 95%;
+            margin: 20px auto;
+        }
+        .left-container {
+            flex: 2;
+        }
+        .right-container {
+            flex: 1;
+        }
+        .box {
+            border: 2px solid black;
+            padding: 20px;
+            min-height: 200px;
+            text-align: center;
+        }
+        .right-box {
+            height: calc(100% - 40px);
+        }
+        .pokemon-sprite {
+            width: 150px;  /* Adjust size as needed */
+            height: 150px;
+            image-rendering: pixelated;  /* Makes pixel art look crisp */
+        }
+    </style>
+</head>
+<body>
+    <div class="page-layout">
+        <div class="left-container">
+            <div class="box">
+                <h2>{{ pokemon_list[0].name }}</h2>
+                <img class="pokemon-sprite" src="{{ pokemon_list[0].image_url }}" alt="{{ pokemon_list[0].name }}">
+            </div>
+            <div class="box">
+                <h2>{{ pokemon_list[1].name }}</h2>
+                <img class="pokemon-sprite" src="{{ pokemon_list[1].image_url }}" alt="{{ pokemon_list[1].name }}">
+            </div>
+        </div>
+        <div class="right-container">
+            <div class="box right-box">
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <a href="{{ url_for('select_pokemon') }}">Select Different Pokemon</a>
+    </div>
+</body>
+</html>
+
+y
