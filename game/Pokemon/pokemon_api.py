@@ -6,15 +6,16 @@ class PokemonAPI:
     def __init__(self):
         self.base_url = 'https://pokeapi.co/api/v2/pokemon/'
         self.sprite_url = 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/'
-        # Dictionary of available Pokemon with their IDs
+        #Dict
         self.available_pokemon = {
-            'pikachu': 25,
+            'raichu': 26,
             'charizard': 6,
             'venusaur': 3,
             'blastoise': 9,
             'mewtwo': 150,
             'gengar': 94
         }
+        #List
         self.selected_pokemon = []
 
     def get_pokemon_data(self, pokemon_name):

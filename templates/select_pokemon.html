@@ -1,77 +1,27 @@
 <!DOCTYPE html>
-<html lang="eng">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Select Pokemon</title>
-    <style>
-        .pokemon-selection {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            padding: 20px;
-        }
-        .pokemon-card {
-            border: 2px solid #ccc;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background-color: white;
-            border-radius: 10px;
-            position: relative;
-        }
-        .pokemon-card.selected {
-            background-color: #e0f0ff;
-            border-color: #3498db;
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .pokemon-sprite {
-            width: 150px;
-            height: 150px;
-            image-rendering: pixelated;
-        }
-        .error {
-            color: red;
-            text-align: center;
-        }
-        button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        .selection-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #3498db;
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-        .pokemon-card.selected .selection-indicator {
-            display: flex;
-        }
-    </style>
+    <title>Select Pokemon - Player {{ player }}</title>
+    <link href="/static/css/select.css" rel="stylesheet">
+
 </head>
 <body>
-    <h1>Select 3 Pokemon</h1>
+    <div class="player-indicator">
+        <div class="current-player">Player {{ player }}'s Turn</div>
+        {% if player == 1 %}
+            <small>Player 2 will select next</small>
+        {% else %}
+            <small>Final selection before battle</small>
+        {% endif %}
+    </div>
+
+    <h1>Select 3 Pokemon - Player {{ player }}</h1>
+
     {% if error %}
         <p class="error">{{ error }}</p>
     {% endif %}
+
     <form method="POST" id="pokemon-form">
         <div class="pokemon-selection">
             {% for pokemon in pokemon_list %}
@@ -84,39 +34,15 @@
             {% endfor %}
         </div>
         <div style="text-align: center; margin-top: 20px;">
-            <button type="submit">Confirm Selection</button>
+            <button type="submit" class="submit-button">
+                {% if player == 1 %}
+                    Continue to Player 2
+                {% else %}
+                    Start Battle
+                {% endif %}
+            </button>
         </div>
     </form>
-
-    <script>
-        function toggleSelection(card, pokemonName) {
-            const input = card.querySelector('input');
-            const selected = card.classList.toggle('selected');
-            input.disabled = !selected;
-
-            const selectedCards = document.querySelectorAll('.pokemon-card.selected');
-            if (selectedCards.length > 3 && selected) {
-                card.classList.remove('selected');
-                input.disabled = true;
-                alert('You can only select 3 Pokemon!');
-                return;
-            }
-
-            // Update selection indicators
-            const indicators = document.querySelectorAll('.selection-indicator');
-            selectedCards.forEach((selectedCard, index) => {
-                const indicator = selectedCard.querySelector('.selection-indicator');
-                indicator.textContent = (index + 1);
-            });
-        }
-
-        document.getElementById('pokemon-form').onsubmit = function(e) {
-            const selectedCount = document.querySelectorAll('.pokemon-card.selected').length;
-            if (selectedCount !== 3) {
-                e.preventDefault();
-                alert('Please select exactly 3 Pokemon!');
-            }
-        };
-    </script>
+    <script src="/static/js/select_pokemon.js"></script>
 </body>
 </html>

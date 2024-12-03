@@ -1,0 +1,75 @@
+.pokemon-selection {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+        .pokemon-card {
+            border: 2px solid #ccc;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: white;
+            border-radius: 10px;
+            position: relative;
+        }
+        .pokemon-card.selected {
+            background-color: #e0f0ff;
+            border-color: #3498db;
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .pokemon-sprite {
+            width: 150px;
+            height: 150px;
+            image-rendering: pixelated;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .selection-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #3498db;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .pokemon-card.selected .selection-indicator {
+            display: flex;
+        }
+
+           .player-indicator {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            background-color: {{ 'lightblue' if player == 1 else 'lightpink' }};
+            border-radius: 5px;
+        }
+
+        .current-player {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: {{ '#0066cc' if player == 1 else '#cc0066' }};
+        }
