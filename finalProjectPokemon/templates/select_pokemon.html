@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Pokemon - Player {{ player }}</title>
+    <link href="/static/css/select.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="player-indicator">
+        <div class="current-player">Player {{ player }}'s Turn</div>
+        {% if player == 1 %}
+            <small>Player 2 will select next</small>
+        {% else %}
+            <small>Final selection before battle</small>
+        {% endif %}
+    </div>
+
+    <h1>Select 3 Pokemon - Player {{ player }}</h1>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" id="pokemon-form">
+        <div class="pokemon-selection">
+            {% for pokemon in pokemon_list %}
+                <div class="pokemon-card" onclick="toggleSelection(this, '{{ pokemon.name.lower() }}')">
+                    <div class="selection-indicator">✓</div>
+                    <img class="pokemon-sprite" src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
+                    <h3>{{ pokemon.name }}</h3>
+                    <input type="hidden" name="pokemon_selection" value="{{ pokemon.name.lower() }}" disabled>
+                </div>
+            {% endfor %}
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" class="submit-button">
+                {% if player == 1 %}
+                    Continue to Player 2
+                {% else %}
+                    Start Battle
+                {% endif %}
+            </button>
+        </div>
+    </form>
+    <script src="/static/js/select_pokemon.js"></script>
+</body>
+</html>

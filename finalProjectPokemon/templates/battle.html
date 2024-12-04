@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+    <meta charset="UTF-8">
+    <title>Pokemon Battle</title>
+    <link href="/static/css/battle.css" rel="stylesheet">
+</head>
+<body>
+        <div class="page-container">
+        <div class="battle-container">
+            <!-- Player 2's Pokemon -->
+            <div class="pokemon-card p2-pokemon1">
+                {% with pokemon = player2_pokemon[0] %}
+                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
+                <h3>{{ pokemon.name }}</h3>
+                <div class="pokemon-stats">
+                    <div class="hp-bar">
+                        <div class="hp-fill" id="p2-pokemon1-hp-fill"></div>
+                    </div>
+                    <div class="hp-text">
+                        HP: <span id="p2-pokemon1-current-hp">{{ pokemon.current_hp }}</span>/<span id="p2-pokemon1-max-hp">{{ pokemon.max_hp }}</span>
+                    </div>
+                </div>
+                {% endwith %}
+            </div>
+
+            <div class="pokemon-card p2-pokemon2">
+                {% with pokemon = player2_pokemon[1] %}
+                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
+                <h3>{{ pokemon.name }}</h3>
+                {% endwith %}
+            </div>
+
+            <div class="pokemon-card p2-pokemon3">
+                {% with pokemon = player2_pokemon[2] %}
+                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
+                <h3>{{ pokemon.name }}</h3>
+                {% endwith %}
+            </div>
+
+            <!-- Player 1's Pokemon -->
+           <div class="pokemon-card p1-pokemon1">
+                {% with pokemon = player1_pokemon[0] %}
+                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
+                <h3>{{ pokemon.name }}</h3>
+                <div class="pokemon-stats">
+                    <div class="hp-bar">
+                        <div class="hp-fill" id="p1-pokemon1-hp-fill"></div>
+                    </div>
+                    <div class="hp-text">
+                        HP: <span id="p1-pokemon1-current-hp">{{ pokemon.current_hp }}</span>/<span id="p1-pokemon1-max-hp">{{ pokemon.max_hp }}</span>
+                    </div>
+                </div>
+                {% endwith %}
+            </div>
+
+            <div class="pokemon-card p1-pokemon2">
+                {% with pokemon = player1_pokemon[1] %}
+                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
+                <h3>{{ pokemon.name }}</h3>
+                {% endwith %}
+            </div>
+
+            <div class="pokemon-card p1-pokemon3">
+                {% with pokemon = player1_pokemon[2] %}
+                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
+                <h3>{{ pokemon.name }}</h3>
+                {% endwith %}
+            </div>
+        </div>
+
+        <div class="battle-info">
+            <h2>Battle Info</h2>
+            <div class="battle-log">
+                <p>Battle started!</p>
+                <p>Player 1's {{ player1_pokemon[0].name }} vs Player 2's {{ player2_pokemon[0].name }}</p>
+            </div>
+
+            <div class="moves-section">
+                <h3>Available Moves</h3>
+                {% with pokemon = player1_pokemon[0] %}
+                    {% for move in pokemon.moves %}
+                        <button class="move-button">{{ move.name }}</button>
+                    {% endfor %}
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+      <script type="module">
+        import { Game } from '/static/js/game.js';
+
+        window.addEventListener('load', () => {
+            const game = new Game()
+    </script>
+</body>
+</html>
