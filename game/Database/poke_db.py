@@ -1,6 +1,14 @@
 import sqlite3
 import os
 
+pokemon_data = [
+    (26, 'raichu', 60, 90, 55, 90, 110, 'electric'),
+    (6,'charizard', 78, 84, 78, 85, 100, 'fire/flying'),
+    (9, 'blastoise', 79, 83, 100, 85, 78, 'water'),
+    (150, 'mewtwo', 106, 110, 90, 154, 130, 'psychic'),
+    (94, 'gengar', 60, 65, 60, 130, 110, 'ghost/poison'),
+    (3, 'venusaur', 80, 82, 83, 100, 80, 'grass/poison')
+]
 def get_db_conn():
     """Create a database connection and return connection and cursor"""
     conn = sqlite3.connect('poke.db')
@@ -8,17 +16,31 @@ def get_db_conn():
     return conn
 
 def init_db():
-    """Initialize the database with required tables"""
     conn = get_db_conn()
     cursor = conn.cursor()
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS trainer_pokemon (
-            trainer_id INTEGER PRIMARY KEY,
-            pokemon1 TEXT NOT NULL,
-            pokemon2 TEXT NOT NULL,
-            pokemon3 TEXT NOT NULL
+            trainer_id  INTEGER PRIMARY KEY,
+            pokemon1    TEXT NOT NULL,
+            pokemon2    TEXT NOT NULL,
+            pokemon3    TEXT NOT NULL
         )
     ''')
+    # cursor.execute('''
+    #     CREATE TABLE IF NOT EXISTS pokemons (
+    #         poke_id     INTEGER PRIMARY KEY,
+    #         name        TEXT NOT NULL,
+    #         hp          INTEGER NOT NULL,
+    #         attack      INTEGER NOT NULL,
+    #         defense     INTEGER NOT NULL,
+    #         special     INTEGER NOT NULL,
+    #         speed       INTEGER NOT NULL,
+    #         type        TEXT NOT NULL
+    #     )
+    # ''')
+    # cursor.execute('''
+    #     INSERT INTO pokemons (poke_id, name, hp, attack, defense,
+    # ''')   ## discontinued because not focus of the
     conn.commit()
     conn.close()
