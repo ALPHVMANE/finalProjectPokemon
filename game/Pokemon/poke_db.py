@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-pokemon_data = [
+pokemon_stats = [
     (26, 'raichu', 60, 90, 55, 90, 110, 'electric'),
     (6,'charizard', 78, 84, 78, 85, 100, 'fire/flying'),
     (9, 'blastoise', 79, 83, 100, 85, 78, 'water'),

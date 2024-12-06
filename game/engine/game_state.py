@@ -1,6 +1,6 @@
-from finalProjectPokemon.game.Pokemon.poke_db import pokemon_stats
-from finalProjectPokemon.game.Pokemon.pokemon_battle import Pokemon, Move
-from finalProjectPokemon.game.Pokemon.pokemon_api import PokemonAPI
+from game.Pokemon.poke_db import pokemon_stats
+from game.Pokemon.pokemon_battle import Pokemon, Move
+from game.Pokemon.pokemon_api import PokemonAPI
 
 
 class GameState:
@@ -56,7 +56,7 @@ class GameState:
         }
 
     def _get_pokemon_stats(self, name):
-        """Get Pokemon stats from pokemon_stats tuple"""
+
         name = name.lower()
         for stats in pokemon_stats:
             if stats[1].lower() == name:
