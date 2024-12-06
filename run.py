@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from game.Pokemon.pokemon_api import PokemonAPI
 from game.engine.game_state import GameState
 import os
-from finalProjectPokemon.game.Pokemon.poke_db import get_db_conn, init_db
+from game.Pokemon.poke_db import get_db_conn, init_db
 
 app = Flask(__name__)
 pokemon_api = PokemonAPI()
