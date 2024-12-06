@@ -27,20 +27,5 @@ def init_db():
             pokemon3    TEXT NOT NULL
         )
     ''')
-    # cursor.execute('''
-    #     CREATE TABLE IF NOT EXISTS pokemons (
-    #         poke_id     INTEGER PRIMARY KEY,
-    #         name        TEXT NOT NULL,
-    #         hp          INTEGER NOT NULL,
-    #         attack      INTEGER NOT NULL,
-    #         defense     INTEGER NOT NULL,
-    #         special     INTEGER NOT NULL,
-    #         speed       INTEGER NOT NULL,
-    #         type        TEXT NOT NULL
-    #     )
-    # ''')
-    # cursor.execute('''
-    #     INSERT INTO pokemons (poke_id, name, hp, attack, defense,
-    # ''')   ## discontinued because not focus of the
     conn.commit()
     conn.close()

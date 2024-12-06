@@ -1,96 +1,94 @@
 <!DOCTYPE html>
-<html lang="eng">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Pokemon Battle</title>
     <link href="/static/css/battle.css" rel="stylesheet">
 </head>
 <body>
-        <div class="page-container">
+    <div class="page-container">
         <div class="battle-container">
             <!-- Player 2's Pokemon -->
-            <div class="pokemon-card p2-pokemon1">
-                {% with pokemon = player2_pokemon[0] %}
-                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
-                <h3>{{ pokemon.name }}</h3>
-                <div class="pokemon-stats">
-                    <div class="hp-bar">
-                        <div class="hp-fill" id="p2-pokemon1-hp-fill"></div>
-                    </div>
-                    <div class="hp-text">
-                        HP: <span id="p2-pokemon1-current-hp">{{ pokemon.current_hp }}</span>/<span id="p2-pokemon1-max-hp">{{ pokemon.max_hp }}</span>
+            <div class="pokemon-area player2-area">
+                {% for pokemon in player2_pokemon %}
+                <div class="pokemon-card p2-pokemon{{ loop.index }}" {% if loop.index > 1 %}data-status="waiting"{% endif %}>
+                    <img src="{{ pokemon.img_url }}" alt="{{ pokemon.name }}">
+                    <h3>{{ pokemon.name }}</h3>
+                    <div class="pokemon-stats">
+                        <div class="hp-bar">
+                            <div class="hp-fill" id="p2-pokemon{{ loop.index }}-hp-fill"
+                                 style="width: {{ (pokemon.current_hp / pokemon.max_hp) * 100 }}%"></div>
+                        </div>
+                        <div class="hp-text">
+                            HP: <span id="p2-pokemon{{ loop.index }}-current-hp">{{ pokemon.current_hp }}</span>/<span id="p2-pokemon{{ loop.index }}-max-hp">{{ pokemon.max_hp }}</span>
+                        </div>
                     </div>
                 </div>
-                {% endwith %}
-            </div>
-
-            <div class="pokemon-card p2-pokemon2">
-                {% with pokemon = player2_pokemon[1] %}
-                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
-                <h3>{{ pokemon.name }}</h3>
-                {% endwith %}
-            </div>
-
-            <div class="pokemon-card p2-pokemon3">
-                {% with pokemon = player2_pokemon[2] %}
-                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
-                <h3>{{ pokemon.name }}</h3>
-                {% endwith %}
+                {% endfor %}
             </div>
 
             <!-- Player 1's Pokemon -->
-           <div class="pokemon-card p1-pokemon1">
-                {% with pokemon = player1_pokemon[0] %}
-                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
-                <h3>{{ pokemon.name }}</h3>
-                <div class="pokemon-stats">
-                    <div class="hp-bar">
-                        <div class="hp-fill" id="p1-pokemon1-hp-fill"></div>
-                    </div>
-                    <div class="hp-text">
-                        HP: <span id="p1-pokemon1-current-hp">{{ pokemon.current_hp }}</span>/<span id="p1-pokemon1-max-hp">{{ pokemon.max_hp }}</span>
+            <div class="pokemon-area player1-area">
+                {% for pokemon in player1_pokemon %}
+                <div class="pokemon-card p1-pokemon{{ loop.index }}" {% if loop.index > 1 %}data-status="waiting"{% endif %}>
+                    <img src="{{ pokemon.img_url }}" alt="{{ pokemon.name }}">
+                    <h3>{{ pokemon.name }}</h3>
+                    <div class="pokemon-stats">
+                        <div class="hp-bar">
+                            <div class="hp-fill" id="p1-pokemon{{ loop.index }}-hp-fill"
+                                 style="width: {{ (pokemon.current_hp / pokemon.max_hp) * 100 }}%"></div>
+                        </div>
+                        <div class="hp-text">
+                            HP: <span id="p1-pokemon{{ loop.index }}-current-hp">{{ pokemon.current_hp }}</span>/<span id="p1-pokemon{{ loop.index }}-max-hp">{{ pokemon.max_hp }}</span>
+                        </div>
                     </div>
                 </div>
-                {% endwith %}
-            </div>
-
-            <div class="pokemon-card p1-pokemon2">
-                {% with pokemon = player1_pokemon[1] %}
-                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
-                <h3>{{ pokemon.name }}</h3>
-                {% endwith %}
-            </div>
-
-            <div class="pokemon-card p1-pokemon3">
-                {% with pokemon = player1_pokemon[2] %}
-                <img src="{{ pokemon.image_url }}" alt="{{ pokemon.name }}">
-                <h3>{{ pokemon.name }}</h3>
-                {% endwith %}
+                {% endfor %}
             </div>
         </div>
 
         <div class="battle-info">
-            <h2>Battle Info</h2>
-            <div class="battle-log">
-                <p>Battle started!</p>
-                <p>Player 1's {{ player1_pokemon[0].name }} vs Player 2's {{ player2_pokemon[0].name }}</p>
+            <div class="battle-log" id="battleLog">
+                {% for log in battle_log %}
+                    <p>{{ log }}</p>
+                {% endfor %}
             </div>
 
-            <div class="moves-section">
-                <h3>Available Moves</h3>
-                {% with pokemon = player1_pokemon[0] %}
-                    {% for move in pokemon.moves %}
-                        <button class="move-button">{{ move.name }}</button>
-                    {% endfor %}
-                {% endwith %}
+            <div class="controls-section">
+                <div class="moves-section" id="movesSection">
+                    <h3>Available Moves</h3>
+                    <div class="move-buttons">
+                       {% if current_turn % 2 == 1 %}
+                            {% with pokemon = player1_pokemon[0] %}
+                                {% for move in pokemon.moves %}
+                                    <button class="move-button" data-move-index="{{ loop.index0 }}">
+                                        {{ move.name }}
+                                        <span class="move-power">Power: {{ move.power }}</span>
+                                        <span class="move-accuracy">Acc: {{ move.accuracy }}</span>
+                                    </button>
+                                {% endfor %}
+                            {% endwith %}
+                        {% else %}
+                            {% with pokemon = player2_pokemon[0] %}
+                                {% for move in pokemon.moves %}
+                                    <button class="move-button" data-move-index="{{ loop.index0 }}">
+                                        {{ move.name }}
+                                        <span class="move-power">Power: {{ move.power }}</span>
+                                        <span class="move-accuracy">Acc: {{ move.accuracy }}</span>
+                                    </button>
+                                {% endfor %}
+                            {% endwith %} view changes
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-      <script type="module">
+    <script type="module">
         import { Game } from '/static/js/game.js';
-
-        window.addEventListener('load', () => {
-            const game = new Game()
+        document.addEventListener('DOMContentLoaded', () => {
+            const game = new Game();
+        });
     </script>
 </body>
 </html>
