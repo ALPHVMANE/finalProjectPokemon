@@ -3,18 +3,30 @@ from game.Pokemon.pokemon_api import PokemonAPI
 from game.engine.game_state import GameState
 import os
 from game.Pokemon.poke_db import get_db_conn, init_db, add_trainer, get_trainer
+from functools import wraps
 
 app = Flask(__name__)
 pokemon_api = PokemonAPI()
 game_states = {}
 
+# IP Blocking Configuration
+BLOCKED_IPS = {'127.0.0.0'}  # Add IPs you want to block
+
+def check_ip(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if request.remote_addr in BLOCKED_IPS:
+            return jsonify({'error': 'Access denied from blocked IP'}), 403
+        return f(*args, **kwargs)
+    return wrapper
 
 @app.route('/', methods=['GET'])
+@check_ip
 def home():
     return redirect(url_for('select_pokemon', player=1))
 
-
 @app.route('/select/<int:player>', methods=['GET', 'POST'])
+@check_ip
 def select_pokemon(player):
     if player not in [1, 2]:
         return redirect(url_for('select_pokemon', player=1))
@@ -48,8 +60,8 @@ def select_pokemon(player):
                            pokemon_list=pokemon_api.get_all_available_pokemon(),
                            player=player)
 
-
 @app.route('/battle')
+@check_ip
 def display_battle():
     # Get both trainers' data
     trainer1 = get_trainer(1)
@@ -109,6 +121,7 @@ def display_battle():
                        current_turn=battle_state['current_turn'])
 
 @app.route('/battle/move', methods=['POST'])
+@check_ip
 def execute_move():
     game_id = 'trainer_1_2'
     battle_state = game_states[game_id].get_current_state()
@@ -149,8 +162,8 @@ def execute_move():
         'game_over': battle_state['game_over']
     })
 
-
 @app.route('/battle/state')
+@check_ip
 def get_battle_state():
     game_id = 'trainer_1_2'
     if game_id not in game_states:
@@ -162,8 +175,8 @@ def get_battle_state():
         **battle_state
     })
 
-
 @app.route('/battle/reset', methods=['POST'])
+@check_ip
 def reset_battle():
     game_id = 'trainer_1_2'
     game_states.pop(game_id, None)
@@ -175,7 +188,6 @@ def reset_battle():
     conn.close()
 
     return redirect(url_for('home'))
-
 
 if __name__ == '__main__':
     template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
