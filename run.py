@@ -2,11 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 from game.Pokemon.pokemon_api import PokemonAPI
 from game.engine.game_state import GameState
 import os
-from game.Pokemon.poke_db import get_db_conn, init_db
+from game.Pokemon.poke_db import get_db_conn, init_db, add_trainer, get_trainer
 
 app = Flask(__name__)
 pokemon_api = PokemonAPI()
-game_states = {}  # Dictionary to store game states for different trainer pairs
+game_states = {}
 
 
 @app.route('/', methods=['GET'])
@@ -20,25 +20,24 @@ def select_pokemon(player):
         return redirect(url_for('select_pokemon', player=1))
 
     if request.method == 'POST':
+        ssn = request.form.get('ssn')
         selected = request.form.getlist('pokemon_selection')
+
+        # Validate inputs
+        if not ssn:
+            return render_template('select_pokemon.html',
+                                   pokemon_list=pokemon_api.get_all_available_pokemon(),
+                                   player=player,
+                                   error="Please provide your SSN!")
+
         if len(selected) != 3:
             return render_template('select_pokemon.html',
                                    pokemon_list=pokemon_api.get_all_available_pokemon(),
                                    player=player,
                                    error="Please select exactly 3 Pokemon!")
 
-        # Store selections in database
-        conn = get_db_conn()
-        cursor = conn.cursor()
-
-        cursor.execute('''
-            INSERT OR REPLACE INTO trainer_pokemon 
-            (trainer_id, pokemon1, pokemon2, pokemon3)
-            VALUES (?, ?, ?, ?)
-        ''', (player, selected[0], selected[1], selected[2]))
-
-        conn.commit()
-        conn.close()
+        # Use add_trainer function instead of direct DB operations
+        add_trainer(player, ssn, selected)
 
         if player == 1:
             return redirect(url_for('select_pokemon', player=2))
@@ -52,24 +51,33 @@ def select_pokemon(player):
 
 @app.route('/battle')
 def display_battle():
-    conn = get_db_conn()
-    cursor = conn.cursor()
+    # Get both trainers' data
+    trainer1 = get_trainer(1)
+    trainer2 = get_trainer(2)
 
-    cursor.execute('SELECT * FROM trainer_pokemon WHERE trainer_id IN (1, 2)')
-    pokemon_rows = cursor.fetchall()
-    conn.close()
-
-    if len(pokemon_rows) != 2:
+    if not trainer1 or not trainer2:
         return redirect(url_for('select_pokemon', player=1))
 
     players_pokemon = {}
-    for row in pokemon_rows:
-        player_pokemon = []
-        for pokemon_name in [row['pokemon1'], row['pokemon2'], row['pokemon3']]:
-            pokemon_data = pokemon_api.get_pokemon_data(pokemon_name)
-            if pokemon_data['success']:
-                player_pokemon.append(pokemon_data)
-        players_pokemon[row['trainer_id']] = player_pokemon
+    players_ssn = {}
+
+    # Process trainer 1
+    players_ssn[1] = trainer1['ssn']
+    player1_pokemon = []
+    for pokemon_name in trainer1['pokemon_list']:
+        pokemon_data = pokemon_api.get_pokemon_data(pokemon_name)
+        if pokemon_data['success']:
+            player1_pokemon.append(pokemon_data)
+    players_pokemon[1] = player1_pokemon
+
+    # Process trainer 2
+    players_ssn[2] = trainer2['ssn']
+    player2_pokemon = []
+    for pokemon_name in trainer2['pokemon_list']:
+        pokemon_data = pokemon_api.get_pokemon_data(pokemon_name)
+        if pokemon_data['success']:
+            player2_pokemon.append(pokemon_data)
+    players_pokemon[2] = player2_pokemon
 
     game_id = 'trainer_1_2'
     if game_id not in game_states:
@@ -78,19 +86,27 @@ def display_battle():
 
     battle_state = game_states[game_id].get_current_state()
 
+    # Since we're still debugging, keep the debug info
     print("\n=== DEBUG INFO ===")
     print("Battle State:", battle_state)
     print("\nPlayer 1 Pokemon Details:")
+    print(f"SSN: {players_ssn[1]}")
     for pokemon in battle_state['player1_pokemon']:
+        print(f"Pokemon: {pokemon}")
+    print("--------------")
+    print("\nPlayer 2 Pokemon Details:")
+    print(f"SSN: {players_ssn[2]}")
+    for pokemon in battle_state['player2_pokemon']:
         print(f"Pokemon: {pokemon}")
     print("==================\n")
 
     return render_template('battle.html',
-                           player1_pokemon=battle_state['player1_pokemon'],
-                           player2_pokemon=battle_state['player2_pokemon'],
-                           battle_log=battle_state['battle_log'],
-                           current_turn=battle_state['current_turn'])
-
+                       player1_pokemon=battle_state['player1_pokemon'],
+                       player2_pokemon=battle_state['player2_pokemon'],
+                       player1_ssn=players_ssn[1],
+                       player2_ssn=players_ssn[2],
+                       battle_log=battle_state['battle_log'],
+                       current_turn=battle_state['current_turn'])
 
 @app.route('/battle/move', methods=['POST'])
 def execute_move():

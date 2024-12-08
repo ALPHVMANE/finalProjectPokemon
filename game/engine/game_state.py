@@ -205,3 +205,65 @@ class GameState:
             }
         }
 
+#DEMO AREA
+if __name__ == '__main__':
+    game = GameState()
+
+    player1_team = [
+        {'name': 'Charizard'},
+        {'name': 'Blastoise'}
+    ]
+
+    player2_team = [
+        {'name': 'Mewtwo'},
+        {'name': 'Gengar'}
+    ]
+
+    print("=== Pokemon Battle Simulation ===")
+
+    try:
+        game.initialize_battle(player1_team, player2_team)
+        print("\nBattle Started!")
+        print("Player 1's team:", [pokemon['name'] for pokemon in player1_team])
+        print("Player 2's team:", [pokemon['name'] for pokemon in player2_team])
+
+        # Get initial state
+        state = game.get_current_state()
+        print(f"\nInitial State:")
+        print(f"Active Pokemon - Player 1: {state['active_pokemon']['player1']}")
+        print(f"Active Pokemon - Player 2: {state['active_pokemon']['player2']}")
+
+        # Simulate some turns
+        print("\n=== Battle Sequence ===")
+
+        # Turn 1: Player 1's Charizard uses Fire Blast (move index 3)
+        result = game.execute_turn(1, 'move', 3)
+        print("\nTurn 1:")
+        print(f"Damage dealt: {result['damage_dealt']}")
+        print(f"Target HP remaining: {result['target_hp']}")
+        print("Battle log:", result['battle_log'][-1])
+
+        # Turn 2: Player 2's Mewtwo uses Psychic (move index 0)
+        result = game.execute_turn(2, 'move', 0)
+        print("\nTurn 2:")
+        print(f"Damage dealt: {result['damage_dealt']}")
+        print(f"Target HP remaining: {result['target_hp']}")
+        print("Battle log:", result['battle_log'][-1])
+
+        # Get final state
+        final_state = game.get_current_state()
+        print("\n=== Current Battle Status ===")
+        if final_state['player1_pokemon']:
+            print(f"Player 1's {final_state['active_pokemon']['player1']}:")
+            print(
+                f"HP: {final_state['player1_pokemon'][0]['current_hp']}/{final_state['player1_pokemon'][0]['max_hp']}")
+
+        if final_state['player2_pokemon']:
+            print(f"\nPlayer 2's {final_state['active_pokemon']['player2']}:")
+            print(
+                f"HP: {final_state['player2_pokemon'][0]['current_hp']}/{final_state['player2_pokemon'][0]['max_hp']}")
+
+        print("\nGame Over:", final_state['game_over'])
+
+    except ValueError as e:
+        print(f"Error: {e}")

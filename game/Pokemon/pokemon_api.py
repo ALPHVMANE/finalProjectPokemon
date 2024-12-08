@@ -48,3 +48,21 @@ class PokemonAPI:
             if data['success']:
                 pokemon_list.append(data)
         return pokemon_list
+
+#DEMO AREA
+if __name__ == '__main__':
+    pokemon_api = PokemonAPI()
+
+    print("\n--- Single Pokemon ---")
+    raichu_data = pokemon_api.get_pokemon_data('raichu')
+    print(f"Raichu data: {raichu_data}")
+
+    print("\n--- Invalid Pokemon ---")
+    invalid_data = pokemon_api.get_pokemon_data('pikachu')
+    print(f"Invalid Pokemon data: {invalid_data}")
+
+    print("\n--- All Available Pokemon ---")
+    all_pokemon = pokemon_api.get_all_available_pokemon()
+    print("Available Pokemon:")
+    for pokemon in all_pokemon:
+        print(f"- {pokemon['name']} (ID: {pokemon['id']}, Sprite: {pokemon['image_url']})")

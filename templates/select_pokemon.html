@@ -23,6 +23,10 @@
     {% endif %}
 
     <form method="POST" id="pokemon-form">
+         <div class="ssn-input" style="text-align: center; margin-bottom: 20px;">
+            <label for="ssn">Enter UID:</label>
+            <input type="text" id="ssn" name="ssn" value="{{ ssn }}" required>
+        </div>
         <div class="pokemon-selection">
             {% for pokemon in pokemon_list %}
                 <div class="pokemon-card" onclick="toggleSelection(this, '{{ pokemon.name.lower() }}')">
